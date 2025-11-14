@@ -16,6 +16,10 @@ return [
     |
     */
 
+    'dashboard' => [
+        'url' => env('DASHBOARD_API_URL', 'https://dashboard.test/api'),
+    ],
+
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],

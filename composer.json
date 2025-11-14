@@ -11,6 +11,9 @@
     "require": {
         "php": "^8.4.0",
         "laravel/framework": "^12.38.1",
+        "livewire/flux": "^2.6.1",
+        "livewire/flux-pro": "^2.6.1",
+        "livewire/livewire": "^4.0@beta",
         "nativephp/mobile": "^1.13",
         "nunomaduro/essentials": "^1.0.1"
     },
@@ -41,12 +44,16 @@
             "Tests\\": "tests/"
         }
     },
-    "repositories": [
-        {
+    "repositories": {
+        "flux-pro": {
+            "type": "composer",
+            "url": "https://composer.fluxui.dev"
+        },
+        "0": {
             "type": "composer",
             "url": "https://nativephp.composer.sh"
         }
-    ],
+    },
     "scripts": {
         "setup": [
             "composer install",
