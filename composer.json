@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.4.0",
         "laravel/framework": "^12.38.1",
+        "nativephp/mobile": "^1.13",
         "nunomaduro/essentials": "^1.0.1"
     },
     "require-dev": {
@@ -40,6 +41,12 @@
             "Tests\\": "tests/"
         }
     },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://nativephp.composer.sh"
+        }
+    ],
     "scripts": {
         "setup": [
             "composer install",
