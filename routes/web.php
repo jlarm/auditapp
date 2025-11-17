@@ -2,8 +2,12 @@
 
 declare(strict_types=1);
 
-use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn (): View => view('dashboard'))->middleware('token.valid');
-Route::get('/login', fn (): View => view('login'))->name('login');
+Route::group(['middleware' => ['token.valid']], function () {
+    Route::livewire('/', 'pages::dashboard')->name('dashboard');
+    Route::livewire('{dealership}', 'pages::dealership')->name('dealership');
+    Route::livewire('{dealership}/{store}', 'pages::store')->name('store');
+});
+
+Route::livewire('login', 'pages::login')->name('login');

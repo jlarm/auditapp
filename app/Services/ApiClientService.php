@@ -13,22 +13,23 @@ final class ApiClientService
 
     private ?string $token = null;
 
-//    public function __construct()
-//    {
-//        $this->baseUrl = config('services.auth.base_url');
-//    }
+    public function __construct()
+    {
+        $this->baseUrl = config('services.dashboard.url');
+    }
 
     public function setToken(?string $token): self
     {
         $this->token = $token;
+
         return $this;
     }
 
-    public function login(string $email, string $password)
+    public function login(string $email, string $password): mixed
     {
         $response = Http::withOptions([
             'verify' => false, // Disable SSL verification for local development
-        ])->post('https://dashboard.test/api/login', [
+        ])->post("{$this->baseUrl}/login", [
             'email' => $email,
             'password' => $password,
         ]);
@@ -37,10 +38,85 @@ final class ApiClientService
             throw new RuntimeException('Login failed: '.$response->body());
         }
 
-        $data = $response->json();
+        return $response->json();
+    }
 
-//        $this->token = $data['token'];
+    public function logout(): bool
+    {
+        if (! $this->token) {
+            throw new RuntimeException('No token set to logout.');
+        }
 
-        return $data;
+        $response = Http::withOptions([
+            'verify' => false,
+        ])->withToken($this->token)
+            ->post("{$this->baseUrl}/logout");
+
+        if ($response->failed()) {
+            throw new RuntimeException('Logout failed: '.$response->body());
+        }
+
+        $this->token = null;
+
+        return true;
+    }
+
+    public function getDealerships(): array
+    {
+        if (! $this->token) {
+            throw new RuntimeException('No token set for API request.');
+        }
+
+        $response = Http::withOptions([
+            'verify' => false,
+        ])->withToken($this->token)
+            ->get("{$this->baseUrl}/dealerships");
+
+        if ($response->failed()) {
+            throw new RuntimeException('Failed to fetch dealerships: '.$response->body());
+        }
+
+        return $response->json('dealerships', []);
+    }
+
+    public function getStores(string $dealershipId): array
+    {
+        if (! $this->token) {
+            throw new RuntimeException('No token set for API request.');
+        }
+
+        $response = Http::withOptions([
+            'verify' => false,
+        ])->withToken($this->token)
+            ->get("{$this->baseUrl}/stores", [
+                'dealership_id' => $dealershipId,
+            ]);
+
+        if ($response->failed()) {
+            throw new RuntimeException('Failed to fetch stores: '.$response->body());
+        }
+
+        return $response->json('stores', []);
+    }
+
+    public function getStore(string $dealershipId, string $storeId): array
+    {
+        if (! $this->token) {
+            throw new RuntimeException('No token set for API request.');
+        }
+
+        $response = Http::withOptions([
+            'verify' => false,
+        ])->withToken($this->token)
+            ->get("{$this->baseUrl}/store", [
+                'dealership_id' => $dealershipId,
+                'store_id' => $storeId,
+            ]);
+
+        if ($response->failed()) {
+            throw new RuntimeException('Failed to fetch store: '.$response->body());
+        }
+
+        return $response->json('store', []);
     }
 }

@@ -17,8 +17,8 @@ final class AuthService
         $this->baseUrl = config('services.auth.base_url');
     }
 
-    public function testResponse()
+    public function testResponse(string $token)
     {
-        return Http::get("{https://dashboard/api/test")->json();
+        return Http::get('{https://dashboard/api/test')->json();
     }
 }
